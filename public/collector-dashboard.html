@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Collector Dashboard - FoodBridge</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="hidden">
+
+  <nav class="navbar">
+    <div class="nav-left">
+      <a href="index.html" class="brand"><span class="brand-mark">🍱</span> FoodBridge</a>
+    </div>
+    <div class="nav-links">
+      <a href="collector-dashboard.html" class="active" id="navDashboard">Dashboard</a>
+      <a href="profile.html" id="navProfile">Profile</a>
+    </div>
+    <div class="nav-user">
+      <span class="role-badge collector" id="navUserRole">Collector</span>
+      <span class="user-chip" id="navUserName"></span>
+      <button id="logoutBtn" class="btn btn-outline btn-sm">Log out</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header with-action">
+      <div>
+        <h1 id="welcomeTitle">Food you can pick up</h1>
+        <p>Take only the servings you need. The rest stays available for other collectors.</p>
+        <p class="my-area" id="myAreaLine"></p>
+      </div>
+      <div class="role-switch-box">
+        <span>Have more than you can use?</span>
+        <button id="switchRoleBtn" class="btn btn-accent btn-sm">Switch to Donor</button>
+      </div>
+    </div>
+
+    <div class="stats three">
+      <div class="stat green">
+        <div class="stat-number" id="statAvailableFood">0</div>
+        <div class="stat-label">Food posts available</div>
+      </div>
+      <div class="stat blue">
+        <div class="stat-number" id="statMyClaims">0</div>
+        <div class="stat-label">Waiting for donor to confirm</div>
+      </div>
+      <div class="stat yellow">
+        <div class="stat-number" id="statCollected">0</div>
+        <div class="stat-label">Servings I collected</div>
+      </div>
+    </div>
+
+    <div id="message" class="msg"></div>
+
+    <div class="search-bar">
+      <input type="text" id="searchInput" class="form-control" placeholder="Search by food name or address">
+      <select id="areaFilter" class="form-control" aria-label="Area">
+        <option value="">All areas</option>
+      </select>
+      <select id="typeFilter" class="form-control" aria-label="Food type">
+        <option value="">All food types</option>
+        <option value="Cooked Meal">Cooked Meal</option>
+        <option value="Bakery">Bakery</option>
+        <option value="Fruits &amp; Vegetables">Fruits &amp; Vegetables</option>
+        <option value="Dry Food">Dry Food</option>
+        <option value="Drinks &amp; Dairy">Drinks &amp; Dairy</option>
+      </select>
+      <button id="searchBtn" class="btn btn-primary">Search</button>
+      <button id="clearSearchBtn" class="btn btn-outline">Clear</button>
+    </div>
+
+    <div id="foodGrid" class="food-grid"></div>
+    <div id="emptyState" class="empty-state hidden">
+      No food matches right now. Clear the search or check again in a little while.
+    </div>
+
+    <h2 class="section-title">My claims</h2>
+    <p class="section-sub">Changed your plans? Release a claim so the servings go back to the donor's post.
+       Once the donor confirms your pickup, the claim is locked.</p>
+    <section class="panel">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Food</th>
+              <th>Servings</th>
+              <th>Donor</th>
+              <th>Pickup location</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="claimsTableBody">
+            <tr class="empty-row"><td colspan="6">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/collector.js"></script>
+</body>
+</html>

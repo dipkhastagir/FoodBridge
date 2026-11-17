@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FoodBridge - Share surplus food in Dhaka</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="top-bar">
+    <a href="index.html" class="brand"><span class="brand-mark">🍱</span> FoodBridge</a>
+    <div class="top-bar-links">
+      <a href="login.html" class="btn btn-outline" id="navLoginBtn">Log in</a>
+      <a href="signup.html" class="btn btn-primary" id="navSignupBtn">Create account</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <h1>Good food shouldn't end up in the bin.</h1>
+        <p>Restaurants, bakeries and families post the food they have left over.
+           Volunteer groups claim it and carry it to people who need a meal tonight.</p>
+
+        <p class="live-line" id="liveLine">
+          <span class="live-dot" aria-hidden="true"></span>
+          <span id="liveText">Checking what is waiting for pickup...</span>
+        </p>
+      </div>
+
+      <div class="hero-visual" id="heroTickets" aria-label="Food waiting for pickup">
+        <div class="ticket">
+          <div class="ticket-top">
+            <div class="ticket-head">
+              <span class="ticket-emoji">🍛</span>
+              <span class="type-pill">Cooked Meal</span>
+            </div>
+            <h3>Chicken Biryani</h3>
+            <div class="ticket-info">📍 Banani, Road 11</div>
+            <div class="ticket-info">🏪 Dhaka Food Corner</div>
+          </div>
+          <div class="ticket-bottom">
+            <span class="qty">20 <small>servings left</small></span>
+            <span class="time-left">4h 50m left</span>
+          </div>
+        </div>
+        <div class="ticket second">
+          <div class="ticket-top">
+            <div class="ticket-head">
+              <span class="ticket-emoji">🍞</span>
+              <span class="type-pill">Bakery</span>
+            </div>
+            <h3>Fresh Bread Loaves</h3>
+            <div class="ticket-info">📍 Gulshan 1, Circle</div>
+          </div>
+          <div class="ticket-bottom">
+            <span class="qty">15 <small>servings left</small></span>
+            <span class="time-left">11h left</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="how">
+      <div class="how-inner">
+        <h2>How a meal travels</h2>
+        <ol class="steps four">
+          <li>
+            <span class="step-no">1</span>
+            <h3>A donor posts food</h3>
+            <p>What is left, how much, where to pick it up and how long it stays fresh.</p>
+          </li>
+          <li>
+            <span class="step-no">2</span>
+            <h3>A collector claims what they need</h3>
+            <p>They take only the servings they can use. The rest stays on the list for others.</p>
+          </li>
+          <li>
+            <span class="step-no">3</span>
+            <h3>Pick up, or release</h3>
+            <p>Plans changed before pickup? The collector releases it and the servings go back on the list.</p>
+          </li>
+          <li>
+            <span class="step-no">4</span>
+            <h3>The donor confirms</h3>
+            <p>Once the donor confirms the pickup, the claim is locked and counted as shared.</p>
+          </li>
+        </ol>
+        <p class="how-total" id="sharedLine"></p>
+      </div>
+    </section>
+
+    <section class="roles">
+      <div class="roles-intro">
+        <h2>Two ways to take part</h2>
+        <p>Pick a role when you sign up. You can switch any time from your dashboard.</p>
+      </div>
+
+      <div class="role-box">
+        <div class="role-top">
+          <span class="role-emoji">🏪</span>
+          <div>
+            <h3>Donor</h3>
+            <p>Restaurants, caterers, bakeries, shops and households.</p>
+          </div>
+        </div>
+        <ul class="can-do">
+          <li>Post surplus food in under a minute</li>
+          <li>See who claimed it and their phone number</li>
+          <li>Confirm the pickup when the food is collected</li>
+          <li>Need food for someone? Switch to Collector</li>
+        </ul>
+        <p class="role-count" id="donorCount"></p>
+      </div>
+
+      <div class="role-box collector">
+        <div class="role-top">
+          <span class="role-emoji">🚲</span>
+          <div>
+            <h3>Collector</h3>
+            <p>NGOs, volunteer groups and shelters.</p>
+          </div>
+        </div>
+        <ul class="can-do">
+          <li>Search fresh food by name, area or type</li>
+          <li>Claim only the servings you need</li>
+          <li>Release a claim if you can't make the pickup</li>
+          <li>Got more than you can use? Switch to Donor</li>
+        </ul>
+        <p class="role-count" id="collectorCount"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    FoodBridge &copy; 2026. A Software Quality Assurance &amp; Testing project.
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/home.js"></script>
+</body>
+</html>

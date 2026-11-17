@@ -1,0 +1,39 @@
+FoodBridge - demo accounts (for testing only, not shown in the website)
+=======================================================================
+
+Run "npm run reset" to bring these accounts back with these passwords.
+
+ADMIN
+  Email:    admin@foodbridge.com
+  Password: Admin@FoodBridge26
+  Mobile:   01511000004
+  Area:     Tejgaon
+
+DONOR
+  Name:     Dhaka Food Corner
+  Email:    donor@foodbridge.com
+  Password: Donor@FoodBridge26
+  Mobile:   01711000001
+  Area:     Banani (House 12, Road 11, Banani)
+
+COLLECTOR
+  Name:     Hope Volunteers
+  Email:    collector@foodbridge.com
+  Password: Collector@FoodBridge26
+  Mobile:   01811000002
+  Area:     Mirpur (Section 10, Block C, Mirpur)
+
+SECOND COLLECTOR
+  Name:     Smile Foundation
+  Email:    smile@foodbridge.com
+  Password: Smile@FoodBridge26
+  Mobile:   01911000003
+  Area:     Uttara (Sector 7, Road 3, Uttara)
+
+Try "Forgot password":
+  1. On the log in page click "Forgot password?" and send a request for
+     collector@foodbridge.com with mobile 01811000002.
+  2. Log in as the admin, open "Reset requests", type any 6-digit code
+     (for example 482913) and click "Save code".
+  3. Go back to "Forgot password?" -> "Already have a code? Enter it here",
+     type the email and the code, then choose a new password.

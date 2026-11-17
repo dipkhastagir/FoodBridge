@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign up - FoodBridge</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="auth-page">
+
+    <aside class="auth-side">
+      <a href="index.html" class="brand"><span class="brand-mark">🍱</span> FoodBridge</a>
+      <div>
+        <h2>One account. Either side of the meal.</h2>
+        <p>Choose Donor if you have food to give away. Choose Collector if you
+           pick food up for people who need it. Your area helps both sides find each other.</p>
+      </div>
+      <div class="demo-box">
+        Already registered? <a href="login.html" style="color: var(--turmeric);">Log in here</a>.
+      </div>
+    </aside>
+
+    <main class="auth-main">
+      <div class="auth-card">
+        <a href="index.html" class="back-link" id="backBtn">
+          <span class="back-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="16" height="16"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="back-text"><small>Back to</small>Home</span>
+        </a>
+
+        <h1>Create your account</h1>
+        <p class="sub">It takes less than a minute. You can switch your role later from the dashboard.</p>
+
+        <div id="message" class="msg"></div>
+
+        <form id="signupForm">
+          <div class="form-group">
+            <label for="name">Full name or organisation name</label>
+            <input type="text" id="name" class="form-control" placeholder="e.g. Dhaka Food Corner" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="email">Email address</label>
+              <input type="email" id="email" class="form-control" placeholder="you@example.com" autocomplete="email" required>
+            </div>
+            <div class="form-group">
+              <label for="phone">Mobile number</label>
+              <input type="tel" id="phone" class="form-control" placeholder="01711223344"
+                     pattern="01[3-9][0-9]{8}" minlength="11" maxlength="11" inputmode="numeric" title="Exactly 11 digits starting with 01, e.g. 01711223344"
+                     autocomplete="tel" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="role">I want to</label>
+            <select id="role" class="form-control" required>
+              <option value="">Select a role</option>
+              <option value="donor">Donate food</option>
+              <option value="collector">Collect food</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="area">Area</label>
+              <select id="area" class="form-control" required>
+                <option value="">Select your area</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="address">Address</label>
+              <input type="text" id="address" class="form-control" placeholder="House, road, block" autocomplete="street-address" required>
+            </div>
+          </div>
+          <p class="field-hint">📍 Donors and collectors see each other's area and address to arrange pickups.</p>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input type="password" id="password" class="form-control" placeholder="At least 6 characters" autocomplete="new-password" required>
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword">Confirm password</label>
+              <input type="password" id="confirmPassword" class="form-control" placeholder="Type it again" autocomplete="new-password" required>
+            </div>
+          </div>
+
+          <button type="submit" id="signupBtn" class="btn btn-primary btn-block">Create account</button>
+        </form>
+
+        <p class="auth-switch">Already have an account? <a href="login.html" id="goToLogin">Log in</a></p>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/signup.js"></script>
+</body>
+</html>

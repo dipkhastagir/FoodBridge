@@ -1,0 +1,7 @@
+node_modules/
+data/db.json
+selenium_tests/venv/
+selenium_tests/__pycache__/
+selenium_tests/screenshots/
+selenium_tests/test_results.csv
+selenium_tests/report_results.csv

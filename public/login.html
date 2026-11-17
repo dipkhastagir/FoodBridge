@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Log in - FoodBridge</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="auth-page">
+
+    <aside class="auth-side">
+      <a href="index.html" class="brand"><span class="brand-mark">🍱</span> FoodBridge</a>
+      <div>
+        <h2>Somebody nearby has food to share today.</h2>
+        <p>Log in to post leftover food or to claim food for the people you serve.</p>
+      </div>
+      <div class="demo-box">
+        Forgot your password? <a href="forgot-password.html" style="color: var(--turmeric);">Ask the admin for a code</a>.
+      </div>
+    </aside>
+
+    <main class="auth-main">
+      <div class="auth-card">
+        <a href="index.html" class="back-link" id="backBtn">
+          <span class="back-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="16" height="16"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="back-text"><small>Back to</small>Home</span>
+        </a>
+        <h1>Welcome back</h1>
+        <p class="sub">Log in with your email and password.</p>
+
+        <div id="message" class="msg"></div>
+
+        <form id="loginForm" autocomplete="off">
+          <div class="form-group">
+            <label for="email">Email address</label>
+            <input type="email" id="email" class="form-control" placeholder="you@example.com" autocomplete="off" readonly required>
+          </div>
+
+          <div class="form-group">
+            <div class="label-row">
+              <label for="password">Password</label>
+              <a href="forgot-password.html" id="forgotLink" class="small-link">Forgot password?</a>
+            </div>
+            <input type="password" id="password" class="form-control" placeholder="Your password" autocomplete="off" readonly required>
+          </div>
+
+          <button type="submit" id="loginBtn" class="btn btn-primary btn-block">Log in</button>
+        </form>
+
+        <p class="auth-switch">New to FoodBridge? <a href="signup.html" id="goToSignup">Create an account</a></p>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>

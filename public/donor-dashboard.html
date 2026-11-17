@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Donor Dashboard - FoodBridge</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="hidden">
+
+  <nav class="navbar">
+    <div class="nav-left">
+      <a href="index.html" class="brand"><span class="brand-mark">🍱</span> FoodBridge</a>
+    </div>
+    <div class="nav-links">
+      <a href="donor-dashboard.html" class="active" id="navDashboard">Dashboard</a>
+      <a href="profile.html" id="navProfile">Profile</a>
+    </div>
+    <div class="nav-user">
+      <span class="role-badge" id="navUserRole">Donor</span>
+      <span class="user-chip" id="navUserName"></span>
+      <button id="logoutBtn" class="btn btn-outline btn-sm">Log out</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header with-action">
+      <div>
+        <h1 id="welcomeTitle">Your food posts</h1>
+        <p>Post food you can't use. Collectors can take part of it, and the rest stays open for others.</p>
+      </div>
+      <div class="role-switch-box">
+        <span>Need food for someone?</span>
+        <button id="switchRoleBtn" class="btn btn-accent btn-sm">Switch to Collector</button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-number" id="statTotal">0</div>
+        <div class="stat-label">Total posts</div>
+      </div>
+      <div class="stat green">
+        <div class="stat-number" id="statAvailable">0</div>
+        <div class="stat-label">Servings still available</div>
+      </div>
+      <div class="stat blue">
+        <div class="stat-number" id="statClaimed">0</div>
+        <div class="stat-label">Pickups to confirm</div>
+      </div>
+      <div class="stat yellow">
+        <div class="stat-number" id="statCollected">0</div>
+        <div class="stat-label">Servings collected</div>
+      </div>
+    </div>
+
+    <div id="message" class="msg"></div>
+
+    <section id="confirmPanel" class="confirm-panel hidden">
+      <div class="confirm-head">
+        <h2>Waiting for your confirmation <span class="count-badge" id="confirmCount">0</span></h2>
+        <p>These collectors claimed some of your food. When they pick it up, confirm it here.
+           After you confirm, the collector can no longer release it.</p>
+      </div>
+      <div id="confirmList" class="confirm-list"></div>
+    </section>
+
+    <div class="dash-grid">
+
+      <section class="panel">
+        <h2 id="formTitle">Post surplus food</h2>
+        <p class="panel-sub" id="formSub">Collectors will see it right away. Area and address start as your profile address.</p>
+
+        <form id="foodForm">
+          <input type="hidden" id="editId" value="">
+
+          <div class="form-group">
+            <label for="foodTitle">Food name</label>
+            <input type="text" id="foodTitle" class="form-control" placeholder="e.g. Chicken Biryani" required>
+          </div>
+
+          <div class="form-group">
+            <label for="foodType">Food type</label>
+            <select id="foodType" class="form-control" required>
+              <option value="">Select a type</option>
+              <option value="Cooked Meal">Cooked Meal</option>
+              <option value="Bakery">Bakery</option>
+              <option value="Fruits &amp; Vegetables">Fruits &amp; Vegetables</option>
+              <option value="Dry Food">Dry Food</option>
+              <option value="Drinks &amp; Dairy">Drinks &amp; Dairy</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="quantity">Quantity (servings)</label>
+              <input type="number" id="quantity" class="form-control" min="1" max="1000" placeholder="20" required>
+            </div>
+            <div class="form-group">
+              <label for="expiryHours">Fresh for (hours)</label>
+              <input type="number" id="expiryHours" class="form-control" min="1" max="48" placeholder="6" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="foodArea">Pickup area</label>
+              <select id="foodArea" class="form-control" required>
+                <option value="">Select area</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="location">Pickup address</label>
+              <input type="text" id="location" class="form-control" placeholder="House, road" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="notes">Notes <span class="optional">(optional)</span></label>
+            <textarea id="notes" class="form-control" placeholder="Packing, allergies, best time to come"></textarea>
+          </div>
+
+          <div class="form-buttons">
+            <button type="submit" id="saveFoodBtn" class="btn btn-primary">Post food</button>
+            <button type="button" id="cancelEditBtn" class="btn btn-outline hidden">Cancel edit</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel">
+        <h2>My food posts</h2>
+        <p class="panel-sub">The bar shows how much of each post is still free, claimed and collected.</p>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Food</th>
+                <th>Total</th>
+                <th>Servings</th>
+                <th>Expires</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="foodTableBody">
+              <tr class="empty-row"><td colspan="6">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/donor.js"></script>
+</body>
+</html>

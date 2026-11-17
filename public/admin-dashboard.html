@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin - FoodBridge</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="hidden">
+
+  <nav class="navbar admin-nav">
+    <div class="nav-left">
+      <a href="index.html" class="brand"><span class="brand-mark">🍱</span> FoodBridge</a>
+    </div>
+    <div class="nav-user">
+      <span class="role-badge admin" id="navUserRole">Admin</span>
+      <span class="user-chip" id="navUserName"></span>
+      <button id="logoutBtn" class="btn btn-outline btn-sm">Log out</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Admin control room</h1>
+      <p>Answer password reset requests, edit any user, food post or pickup, and see everything that happens.</p>
+    </div>
+
+    <div class="stats admin-stats">
+      <div class="stat"><div class="stat-number" id="statDonors">0</div><div class="stat-label">Donors</div></div>
+      <div class="stat"><div class="stat-number" id="statCollectors">0</div><div class="stat-label">Collectors</div></div>
+      <div class="stat"><div class="stat-number" id="statFoods">0</div><div class="stat-label">Food posts</div></div>
+      <div class="stat blue"><div class="stat-number" id="statWaiting">0</div><div class="stat-label">Pickups waiting</div></div>
+      <div class="stat yellow"><div class="stat-number" id="statShared">0</div><div class="stat-label">Servings shared</div></div>
+      <div class="stat red"><div class="stat-number" id="statRequests">0</div><div class="stat-label">Requests waiting</div></div>
+    </div>
+
+    <div id="message" class="msg"></div>
+
+    <div class="tabs" role="tablist">
+      <button class="tab active" id="tab-requests" data-section="section-requests">
+        Reset requests <span class="tab-badge" id="requestBadge">0</span>
+      </button>
+      <button class="tab" id="tab-users" data-section="section-users">Users</button>
+      <button class="tab" id="tab-foods" data-section="section-foods">Food posts</button>
+      <button class="tab" id="tab-claims" data-section="section-claims">Claims</button>
+      <button class="tab" id="tab-activity" data-section="section-activity">Activity log</button>
+    </div>
+
+    <section class="panel tab-section" id="section-requests">
+      <h2>Password reset requests</h2>
+      <p class="panel-sub">Call the user on their registered mobile number. If you are sure it is them,
+         type a 6-digit code, click <strong>Save code</strong> and tell them the code. A code works for 2 hours.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Sent</th><th>Account</th><th>Mobile number</th><th>Message</th><th>Status</th><th>Action</th></tr>
+          </thead>
+          <tbody id="requestsBody">
+            <tr class="empty-row"><td colspan="6">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel tab-section hidden" id="section-users">
+      <div class="panel-head">
+        <h2>All users</h2>
+        <button class="btn btn-accent btn-sm" id="addUserBtn">+ Add user</button>
+      </div>
+      <p class="panel-sub">Add donors, collectors or admins. Edit any detail, set a new password, block or delete. Deleting a user removes their food posts and waiting claims.</p>
+      <div class="filter-bar">
+        <input type="text" id="userSearch" class="form-control" placeholder="Search name, email, phone or area">
+        <select id="userRoleFilter" class="form-control" aria-label="Role">
+          <option value="">All roles</option>
+          <option value="donor">Donors</option>
+          <option value="collector">Collectors</option>
+          <option value="admin">Admins</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>User</th><th>Role</th><th>Mobile</th><th>Area</th><th>Posts</th><th>Claims</th><th>Last active</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="usersBody">
+            <tr class="empty-row"><td colspan="9">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel tab-section hidden" id="section-foods">
+      <div class="panel-head">
+        <h2>All food posts</h2>
+        <button class="btn btn-accent btn-sm" id="addFoodBtn">+ Add food post</button>
+      </div>
+      <p class="panel-sub">Add a post for any donor. Edit any post, including the quantity. Deleting a post cancels its waiting claims.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Food</th><th>Donor</th><th>Area</th><th>Servings</th><th>Status</th><th>Posted</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="foodsBody">
+            <tr class="empty-row"><td colspan="7">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel tab-section hidden" id="section-claims">
+      <div class="panel-head">
+        <h2>All claims</h2>
+        <button class="btn btn-accent btn-sm" id="addClaimBtn">+ Add claim</button>
+      </div>
+      <p class="panel-sub">Claim food for any collector, confirm a pickup for the donor, or cancel a claim. Cancelling a waiting claim gives the servings back to the post.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Food</th><th>Servings</th><th>Collector</th><th>Donor</th><th>Claimed</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="claimsBody">
+            <tr class="empty-row"><td colspan="7">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel tab-section hidden" id="section-activity">
+      <h2>Activity log</h2>
+      <p class="panel-sub">Every sign up, login, post, claim, pickup and admin action, newest first.</p>
+      <div class="filter-bar">
+        <select id="activityUser" class="form-control" aria-label="User">
+          <option value="">Everyone</option>
+        </select>
+        <input type="text" id="activitySearch" class="form-control" placeholder="Search actions, e.g. claimed">
+        <button id="activityFilterBtn" class="btn btn-primary">Show</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>When</th><th>Who</th><th>Action</th><th>Details</th></tr>
+          </thead>
+          <tbody id="activityBody">
+            <tr class="empty-row"><td colspan="4">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal hidden" id="userModal">
+    <div class="modal-box">
+      <h2 id="userModalTitle">Edit user</h2>
+      <div id="userModalMessage" class="msg"></div>
+      <form id="userForm">
+        <input type="hidden" id="editUserId">
+        <div class="form-group">
+          <label for="editUserName">Name</label>
+          <input type="text" id="editUserName" class="form-control" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editUserEmail">Email</label>
+            <input type="email" id="editUserEmail" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="editUserPhone">Mobile number</label>
+            <input type="tel" id="editUserPhone" class="form-control"
+                   pattern="01[3-9][0-9]{8}" minlength="11" maxlength="11" inputmode="numeric" title="Exactly 11 digits starting with 01, e.g. 01711223344" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editUserArea">Area</label>
+            <select id="editUserArea" class="form-control" required></select>
+          </div>
+          <div class="form-group">
+            <label for="editUserAddress">Address</label>
+            <input type="text" id="editUserAddress" class="form-control" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editUserRole">Role</label>
+            <select id="editUserRole" class="form-control">
+              <option value="donor">Donor</option>
+              <option value="collector">Collector</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <div class="form-group" id="editUserStatusGroup">
+            <label for="editUserStatus">Status</label>
+            <select id="editUserStatus" class="form-control">
+              <option value="active">Active</option>
+              <option value="blocked">Blocked</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="editUserPassword" id="editUserPasswordLabel">New password <span class="optional">(leave empty to keep it)</span></label>
+          <input type="text" id="editUserPassword" class="form-control" autocomplete="off">
+        </div>
+        <div class="form-buttons">
+          <button type="submit" id="saveUserBtn" class="btn btn-primary">Save user</button>
+          <button type="button" class="btn btn-outline" onclick="closeModal('userModal')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="foodModal">
+    <div class="modal-box">
+      <h2 id="foodModalTitle">Edit food post</h2>
+      <div id="foodModalMessage" class="msg"></div>
+      <form id="foodEditForm">
+        <input type="hidden" id="editFoodId">
+        <div class="form-group" id="editFoodDonorGroup">
+          <label for="editFoodDonor">Donor</label>
+          <select id="editFoodDonor" class="form-control"></select>
+        </div>
+        <div class="form-group">
+          <label for="editFoodTitle">Food name</label>
+          <input type="text" id="editFoodTitle" class="form-control" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editFoodType">Food type</label>
+            <select id="editFoodType" class="form-control" required>
+              <option value="Cooked Meal">Cooked Meal</option>
+              <option value="Bakery">Bakery</option>
+              <option value="Fruits &amp; Vegetables">Fruits &amp; Vegetables</option>
+              <option value="Dry Food">Dry Food</option>
+              <option value="Drinks &amp; Dairy">Drinks &amp; Dairy</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="editFoodQuantity">Total quantity (servings)</label>
+            <input type="number" id="editFoodQuantity" class="form-control" min="1" max="1000" required>
+          </div>
+        </div>
+        <p class="field-hint" id="editFoodClaimed"></p>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="editFoodArea">Pickup area</label>
+            <select id="editFoodArea" class="form-control" required></select>
+          </div>
+          <div class="form-group">
+            <label for="editFoodLocation">Pickup address</label>
+            <input type="text" id="editFoodLocation" class="form-control" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="editFoodHours">Fresh for (hours from now)</label>
+          <input type="number" id="editFoodHours" class="form-control" min="1" max="48" required>
+        </div>
+        <div class="form-group">
+          <label for="editFoodNotes">Notes</label>
+          <textarea id="editFoodNotes" class="form-control"></textarea>
+        </div>
+        <div class="form-buttons">
+          <button type="submit" id="saveFoodEditBtn" class="btn btn-primary">Save food post</button>
+          <button type="button" class="btn btn-outline" onclick="closeModal('foodModal')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal hidden" id="claimModal">
+    <div class="modal-box">
+      <h2>Add claim for a collector</h2>
+      <div id="claimModalMessage" class="msg"></div>
+      <form id="claimForm">
+        <div class="form-group">
+          <label for="newClaimFood">Food post</label>
+          <select id="newClaimFood" class="form-control" required></select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="newClaimCollector">Collector</label>
+            <select id="newClaimCollector" class="form-control" required></select>
+          </div>
+          <div class="form-group">
+            <label for="newClaimQuantity">Servings</label>
+            <input type="number" id="newClaimQuantity" class="form-control" min="1" required>
+          </div>
+        </div>
+        <div class="form-buttons">
+          <button type="submit" id="saveClaimBtn" class="btn btn-primary">Add claim</button>
+          <button type="button" class="btn btn-outline" onclick="closeModal('claimModal')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

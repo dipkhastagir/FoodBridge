@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FoodBridge Software Test Report</title>
+<style>
+:root {
+  --paper: #f6f4ec;
+  --card: #ffffff;
+  --ink: #1d2420;
+  --muted: #5f6a64;
+  --line: #d9ddd3;
+  --leaf: #1f5135;
+  --leaf-soft: #e3eee6;
+  --turmeric: #e8a317;
+  --turmeric-soft: #fbf0d6;
+  --chili: #b4380d;
+  --chili-soft: #f8e4dc;
+  --stripe: #f8f9f5;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #151a17;
+    --card: #1d2420;
+    --ink: #eef1ec;
+    --muted: #a6b0aa;
+    --line: #34403a;
+    --leaf: #7fc39a;
+    --leaf-soft: #233a2c;
+    --turmeric: #f0b742;
+    --turmeric-soft: #3a3020;
+    --chili: #f08a65;
+    --chili-soft: #3d2620;
+    --stripe: #202825;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #151a17; --card: #1d2420; --ink: #eef1ec; --muted: #a6b0aa; --line: #34403a;
+  --leaf: #7fc39a; --leaf-soft: #233a2c; --turmeric: #f0b742; --turmeric-soft: #3a3020;
+  --chili: #f08a65; --chili-soft: #3d2620; --stripe: #202825; color-scheme: dark;
+}
+:root {
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+html { scroll-padding-top: calc(env(safe-area-inset-top, 0px) + 70px); scroll-behavior: smooth; }
+*, *::before, *::after { box-sizing: inherit; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Bell MT", "Georgia", "Times New Roman", serif;
+  font-size: 18px;
+  line-height: 1.6;
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+.topbar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+body::before {
+  content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px);
+  z-index: 10; background: var(--paper);
+}
+.topbar .wrap { display: flex; align-items: center; gap: 20px; height: 58px; overflow-x: auto; }
+.topbar .mark { font-weight: bold; color: var(--leaf); white-space: nowrap; font-size: 19px; }
+.topbar nav { display: flex; gap: 4px; }
+.topbar nav a {
+  color: var(--muted); text-decoration: none; white-space: nowrap;
+  padding: 6px 10px; border-radius: 6px; font-size: 15px;
+}
+.topbar nav a:hover { color: var(--ink); background: var(--leaf-soft); }
+
+.hero { padding: 64px 0 56px; display: grid; grid-template-columns: 1.3fr 1fr; gap: 48px; align-items: center; }
+.hero .kicker { color: var(--turmeric); font-style: italic; font-size: 20px; margin: 0 0 6px; }
+.hero h1 { font-size: clamp(54px, 9vw, 104px); line-height: 0.95; margin: 0; color: var(--leaf); letter-spacing: -1px; }
+.hero h1 span { display: block; font-size: 0.42em; color: var(--ink); letter-spacing: 0; margin-top: 10px; }
+.hero .lede { font-style: italic; color: var(--muted); max-width: 30em; margin: 22px 0 18px; }
+.hero .by { font-size: 17px; }
+.hero .by b { color: var(--leaf); }
+
+.ticket {
+  background: var(--card); border: 1.5px solid var(--line); border-radius: 18px; position: relative;
+  transform: rotate(1.5deg);
+}
+.ticket .top { padding: 26px 28px 22px; }
+.ticket .label { color: var(--muted); font-size: 15px; }
+.ticket .big { font-size: 84px; font-weight: bold; line-height: 1; color: var(--leaf); }
+.ticket .big small { font-size: 26px; color: var(--muted); font-weight: normal; }
+.ticket .bottom {
+  border-top: 2px dashed var(--line); padding: 16px 28px; background: var(--turmeric-soft);
+  border-radius: 0 0 16px 16px; display: flex; justify-content: space-between; gap: 12px; font-size: 16px;
+}
+.ticket .bottom::before, .ticket .bottom::after {
+  content: ""; position: absolute; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--paper); border: 1.5px solid var(--line); margin-top: -28px;
+}
+.ticket .bottom::before { left: -12px; }
+.ticket .bottom::after { right: -12px; }
+.stamp {
+  position: absolute; right: 18px; top: 18px; width: 104px; height: 104px; border-radius: 50%;
+  border: 3px double var(--leaf); color: var(--leaf); display: grid; place-items: center; text-align: center;
+  transform: rotate(-14deg); font-weight: bold; font-size: 17px; line-height: 1.1; opacity: 0.85;
+}
+
+section { padding: 40px 0; border-top: 1px solid var(--line); }
+.sec-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 14px; }
+.sec-head .num { font-size: 46px; color: var(--turmeric); font-weight: bold; line-height: 1; min-width: 44px; }
+.sec-head h2 { font-size: 34px; margin: 0; color: var(--leaf); line-height: 1.15; }
+.prose { max-width: 42em; }
+.prose p { margin: 0 0 14px; }
+
+.box { background: var(--card); border: 1.5px solid var(--line); border-radius: 14px; overflow: hidden; }
+.table-scroll { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 16px; }
+th {
+  text-align: left; padding: 10px 14px; background: var(--leaf); color: #fff; font-weight: bold; white-space: nowrap;
+}
+:root[data-theme="dark"] th { color: #10241a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) th { color: #10241a; } }
+td { padding: 10px 14px; border-top: 1px solid var(--line); vertical-align: top; }
+tbody tr:nth-child(even) td { background: var(--stripe); }
+
+.roles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 18px; }
+.role { background: var(--card); border: 1.5px solid var(--line); border-radius: 14px; padding: 18px 20px; border-top: 5px solid var(--leaf); }
+.role:nth-child(2) { border-top-color: var(--turmeric); }
+.role:nth-child(3) { border-top-color: var(--ink); }
+.role h3 { margin: 0 0 6px; font-size: 22px; }
+.role p { margin: 0; color: var(--muted); font-size: 16px; }
+
+.env { display: grid; grid-template-columns: 200px 1fr; }
+.env div { padding: 10px 16px; border-top: 1px solid var(--line); }
+.env div:nth-child(-n+2) { border-top: none; }
+.env .k { font-weight: bold; color: var(--leaf); background: var(--leaf-soft); }
+
+.kinds { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 18px 0; }
+.kind { background: var(--card); border: 1.5px solid var(--line); border-radius: 14px; padding: 18px 20px; }
+.kind h3 { margin: 0 0 6px; color: var(--leaf); font-size: 21px; }
+.kind p { margin: 0; font-size: 16px; }
+pre {
+  background: var(--card); border: 1.5px solid var(--line); border-left: 5px solid var(--turmeric);
+  border-radius: 10px; padding: 14px 18px; overflow-x: auto; margin: 10px 0 0;
+  font-family: Consolas, "Courier New", monospace; font-size: 15px; line-height: 1.6;
+}
+
+.mod-bar { height: 10px; border-radius: 5px; background: var(--leaf); min-width: 6px; }
+.mod-cell { width: 42%; }
+.num-cell { text-align: center; white-space: nowrap; }
+tr.total td { font-weight: bold; background: var(--leaf-soft) !important; }
+
+.rule { display: grid; grid-template-columns: 260px 1fr 190px; gap: 16px; align-items: center; padding: 14px 18px; border-top: 1px solid var(--line); }
+.rule:first-child { border-top: none; }
+.rule .name { font-weight: bold; }
+.rule .tcs { color: var(--muted); font-size: 15px; }
+.line { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.chip { padding: 3px 11px; border-radius: 20px; font-size: 15px; white-space: nowrap; border: 1.5px solid; }
+.chip.ok { background: var(--leaf-soft); color: var(--leaf); border-color: var(--leaf); }
+.chip.no { background: var(--chili-soft); color: var(--chili); border-color: var(--chili); }
+.chip.ok::before { content: "\2713  "; }
+.chip.no::before { content: "\2717  "; }
+.range { flex: 0 1 60px; height: 2px; background: var(--leaf); }
+.legend { display: flex; gap: 16px; margin: 6px 0 14px; font-size: 15px; color: var(--muted); align-items: center; flex-wrap: wrap; }
+
+.controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+.controls input {
+  flex: 1 1 260px; padding: 10px 14px; border: 1.5px solid var(--line); border-radius: 10px;
+  background: var(--card); color: var(--ink); font: inherit; font-size: 16px;
+}
+.controls input:focus, .filters button:focus-visible { outline: 3px solid var(--turmeric); outline-offset: 1px; }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.filters button {
+  font: inherit; font-size: 15px; padding: 5px 12px; border-radius: 20px; cursor: pointer;
+  border: 1.5px solid var(--line); background: var(--card); color: var(--ink);
+}
+.filters button.on { background: var(--leaf); border-color: var(--leaf); color: var(--card); }
+.count { color: var(--muted); font-size: 15px; margin-bottom: 8px; }
+#results td:first-child { font-weight: bold; white-space: nowrap; color: var(--leaf); }
+#results td.data, #results td.actual { font-size: 15px; color: var(--muted); }
+.pass { display: inline-block; padding: 2px 10px; border-radius: 20px; background: var(--leaf-soft); color: var(--leaf); font-weight: bold; font-size: 14px; }
+.modtag { display: block; font-size: 13px; color: var(--turmeric); margin-top: 2px; }
+.empty { padding: 24px; text-align: center; color: var(--muted); }
+
+.limits { display: grid; gap: 12px; margin-top: 14px; }
+.limit { background: var(--card); border: 1.5px solid var(--line); border-left: 5px solid var(--turmeric); border-radius: 10px; padding: 14px 18px; }
+.limit b { color: var(--leaf); }
+
+footer { padding: 36px 0 48px; border-top: 1px solid var(--line); color: var(--muted); font-size: 15px; text-align: center; }
+
+@media (max-width: 520px) {
+  .ticket .big { font-size: 62px; }
+  .ticket .big small { font-size: 20px; }
+  .stamp { width: 74px; height: 74px; font-size: 13px; right: 12px; top: 12px; }
+  .ticket .bottom { flex-wrap: wrap; font-size: 15px; }
+}
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; padding-top: 40px; }
+  .ticket { transform: none; }
+  .roles, .kinds { grid-template-columns: 1fr; }
+  .rule { grid-template-columns: 1fr; gap: 6px; }
+  .env { grid-template-columns: 1fr; }
+  .env div:nth-child(2) { border-top: none; }
+  .env .k { border-top: 1px solid var(--line); }
+  .env div:first-child { border-top: none; }
+  .mod-cell { width: auto; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <span class="mark">FoodBridge</span>
+    <nav aria-label="Sections">
+      <a href="#intro">Introduction</a>
+      <a href="#about">About</a>
+      <a href="#environment">Environment</a>
+      <a href="#approach">Approach</a>
+      <a href="#summary">Summary</a>
+      <a href="#boundary">Boundary values</a>
+      <a href="#results">All results</a>
+      <a href="#limits">Limitations</a>
+      <a href="#conclusion">Conclusion</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="hero">
+    <div>
+      <p class="kicker">Software Test Report</p>
+      <h1>FoodBridge</h1>
+      <p class="lede">Automated testing of a surplus food sharing website with Selenium WebDriver and Python</p>
+      <p class="by">Prepared by <b>Dip Khastagir</b></p>
+    </div>
+    <div class="ticket" aria-label="Test result: 140 executed, 140 passed, 0 failed">
+      <div class="stamp">All<br>passed</div>
+      <div class="top">
+        <div class="label">Test cases executed</div>
+        <div class="big">140 <small>of 140</small></div>
+      </div>
+      <div class="bottom"><span><b>140</b> passed</span><span><b>0</b> failed</span><span>100% pass rate</span></div>
+    </div>
+  </div>
+
+  <section id="intro">
+    <div class="sec-head"><span class="num">1</span><h2>Introduction</h2></div>
+    <div class="prose">
+      <p>This report describes how the FoodBridge website was tested and what the results were. All tests were automated with Selenium WebDriver in Python and run in Google Chrome against the website running on my computer.</p>
+      <p>In total 140 test cases were written and run. The first 60 check every feature of the website. The other 80 add the features that were still missing and test the limits of every rule, for example the smallest and largest quantity a donor can post, or what happens after the fifth wrong reset code. All 140 test cases passed.</p>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="sec-head"><span class="num">2</span><h2>About FoodBridge</h2></div>
+    <div class="prose">
+      <p>FoodBridge connects people who have extra food with people who can take it to those who need a meal. A restaurant, bakery or family posts the food they cannot use. A volunteer group or NGO claims only the servings it needs and picks the food up. The donor then confirms the pickup, and after that the claim is locked.</p>
+    </div>
+    <div class="roles">
+      <div class="role"><h3>Donor</h3><p>Post, edit and delete food. See who claimed it, with phone number, area, address and a map link. Confirm the pickup.</p></div>
+      <div class="role"><h3>Collector</h3><p>Search food by name, area or type. Claim part of a post. Release a claim before pickup. See the donor's location.</p></div>
+      <div class="role"><h3>Admin</h3><p>Answer forgot password requests with a 6 digit code. Add, edit, block or delete users, food posts and claims. Read the activity log.</p></div>
+    </div>
+    <div class="prose"><p style="margin-top:18px">Other features: a user can switch between donor and collector from the dashboard, the mobile number must be an 11 digit Bangladeshi number, and every user gives an area and address so both sides can find each other.</p></div>
+  </section>
+
+  <section id="environment">
+    <div class="sec-head"><span class="num">3</span><h2>Test Environment</h2></div>
+    <div class="box env">
+      <div class="k">Operating system</div><div>Windows 11</div>
+      <div class="k">Browser</div><div>Google Chrome (latest version)</div>
+      <div class="k">Test tool</div><div>Selenium WebDriver 4 with Python 3.12</div>
+      <div class="k">Code editor</div><div>Visual Studio Code</div>
+      <div class="k">Website</div><div>HTML, CSS and JavaScript front end; Node.js and Express back end; JSON file database</div>
+      <div class="k">Address</div><div>http://localhost:3000</div>
+      <div class="k">Test data</div><div>Demo accounts and food posts, reset to the same state before every test case</div>
+    </div>
+  </section>
+
+  <section id="approach">
+    <div class="sec-head"><span class="num">4</span><h2>Test Approach</h2></div>
+    <div class="prose">
+      <p>Every test case is a separate Python file in the selenium_tests folder, from tc001_signup_valid_donor.py to tc140_profile_dashboard_link.py. Each file can be run alone, and run_all_tests.py runs all of them in order and saves the results to test_results.csv.</p>
+      <p>Before each test case the demo data is reset, so every test starts from the same point and gives the same result no matter how many times it runs. Each test opens Chrome, does what a real user would do (typing, choosing from lists, clicking, confirming popups), then checks the message, the page or the data on screen. A screenshot of Chrome is saved after every test.</p>
+      <p>Two kinds of tests were used:</p>
+    </div>
+    <div class="kinds">
+      <div class="kind"><h3>Functional tests</h3><p>Check that each feature works with normal input and refuses wrong input, such as a missing name or a wrong password.</p></div>
+      <div class="kind"><h3>Boundary tests</h3><p>Check the values right at the edge of each rule. For a rule like quantity 1 to 1000, the test tries 1 and 1000 (should be accepted) and 0 and 1001 (should be refused). Most mistakes in software happen at these edges.</p></div>
+    </div>
+    <div class="prose"><p>Commands used:</p></div>
+    <pre>cd selenium_tests
+venv\Scripts\activate
+python run_all_tests.py</pre>
+  </section>
+
+  <section id="summary">
+    <div class="sec-head"><span class="num">5</span><h2>Test Summary</h2></div>
+    <div class="box table-scroll">
+      <table>
+        <thead><tr><th>Module</th><th>Test cases</th><th class="num-cell">Passed</th><th class="num-cell">Failed</th><th class="num-cell">Pass rate</th></tr></thead>
+        <tbody id="summaryBody"></tbody>
+      </table>
+    </div>
+    <div class="prose"><p style="margin-top:16px">Every module passed all of its test cases. No defects were left open at the end of testing.</p></div>
+  </section>
+
+  <section id="boundary">
+    <div class="sec-head"><span class="num">6</span><h2>Boundary Values Tested</h2></div>
+    <div class="prose"><p>Each rule with a limit, the values that should be accepted, the values that should be refused, and the test cases that prove it. Every value behaved as expected.</p></div>
+    <div class="legend"><span class="chip ok">accepted</span><span class="chip no">refused</span></div>
+    <div class="box" id="ruleList"></div>
+  </section>
+
+  <section id="results">
+    <div class="sec-head"><span class="num">7</span><h2>Detailed Test Results</h2></div>
+    <div class="prose"><p>All 140 test cases with the test data used and what actually happened when the test ran. Search or pick a module to narrow the list.</p></div>
+    <div class="controls">
+      <input type="search" id="search" placeholder="Search by ID, title, data or result, for example TC83 or quantity" aria-label="Search test cases">
+    </div>
+    <div class="filters" id="filters"></div>
+    <div class="count" id="count"></div>
+    <div class="box table-scroll">
+      <table>
+        <thead><tr><th>ID</th><th>Test case</th><th>Test data</th><th>Actual result</th><th>Status</th></tr></thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="limits">
+    <div class="sec-head"><span class="num">8</span><h2>Limitations</h2></div>
+    <div class="prose"><p>A few things were outside what these tests could cover:</p></div>
+    <div class="limits">
+      <div class="limit"><b>Code expiry.</b> A reset code stops working after 2 hours. This rule is in the server, but it was not tested automatically because the test would have to wait 2 hours and no page lets you set an older time.</div>
+      <div class="limit"><b>One browser and screen size.</b> All tests ran in Google Chrome on a laptop screen. Edge, Firefox, phones and tablets were not tested.</div>
+      <div class="limit"><b>Other kinds of testing.</b> Load and speed testing, security testing and testing the server routes directly without a browser were not part of this work.</div>
+    </div>
+  </section>
+
+  <section id="conclusion">
+    <div class="sec-head"><span class="num">9</span><h2>Conclusion</h2></div>
+    <div class="prose">
+      <p>FoodBridge was tested with 140 automated test cases covering sign up, login, profile, the donor and collector dashboards, partial claims, pickup confirmation, role switching, password reset through the admin, location, the admin panel, the home page and navigation. All 140 test cases passed.</p>
+      <p>The boundary tests show that every limit in the website works exactly at its edge: values just inside are accepted and values just outside are refused. Because every test resets the data first and lives in its own file, the whole set can be run again at any time to check that later changes have not broken anything.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">FoodBridge Software Test Report. Prepared by Dip Khastagir.</div>
+</footer>
+
+<script>
+const TESTS = [{"id": "TC01", "m": "Sign Up", "t": "Signup with valid information as Donor", "d": "Name: Arpita Saha Arpa, Email: arpita.donor@gmail.com, Mobile: 01711223344, Role: Donor, Area: Kuril, Address: House 5, Road 2, Password: arpita123", "a": "Account created successfully! Please login.", "s": "Pass"}, {"id": "TC02", "m": "Sign Up", "t": "Signup with valid information as Collector", "d": "Name: Rahim Uddin, Email: rahim.collector@gmail.com, Mobile: 01811223344, Role: Collector, Area: Mohammadpur, Address: Block B, Road 4, Password: rahim123", "a": "Account created successfully! Please login.", "s": "Pass"}, {"id": "TC03", "m": "Sign Up", "t": "Signup with empty Name field", "d": "Name: (blank), Email: nameless@gmail.com, Password: pass1234", "a": "Browser message: Please fill out this field.", "s": "Pass"}, {"id": "TC04", "m": "Sign Up", "t": "Signup with invalid email format", "d": "Email: arpitasaha (no @)", "a": "Browser message: Please include an '@' in the email address. 'arpitasaha' is missing an '@'.", "s": "Pass"}, {"id": "TC05", "m": "Sign Up", "t": "Signup with mismatched passwords", "d": "Password: sadia123, Confirm Password: sadia999", "a": "Passwords do not match.", "s": "Pass"}, {"id": "TC06", "m": "Sign Up", "t": "Signup with a password shorter than 6 characters", "d": "Password: abc, Confirm Password: abc", "a": "Password must be at least 6 characters long.", "s": "Pass"}, {"id": "TC07", "m": "Sign Up", "t": "Signup with an already registered email", "d": "Email: donor@foodbridge.com (already exists)", "a": "This email is already registered.", "s": "Pass"}, {"id": "TC08", "m": "Login", "t": "Donor login with valid credentials", "d": "Email: donor@foodbridge.com, Password: Donor@FoodBridge26", "a": "Redirected to: http://localhost:3000/donor-dashboard.html", "s": "Pass"}, {"id": "TC09", "m": "Login", "t": "Collector login with valid credentials", "d": "Email: collector@foodbridge.com, Password: Collector@FoodBridge26", "a": "Redirected to: http://localhost:3000/collector-dashboard.html", "s": "Pass"}, {"id": "TC10", "m": "Login", "t": "Login with wrong password", "d": "Email: donor@foodbridge.com, Password: wrong123", "a": "Invalid email or password.", "s": "Pass"}, {"id": "TC11", "m": "Login", "t": "Login with unregistered email", "d": "Email: nobody@gmail.com, Password: Donor@FoodBridge26", "a": "Invalid email or password.", "s": "Pass"}, {"id": "TC12", "m": "Login", "t": "Login with empty Email field", "d": "Email: (blank), Password: Donor@FoodBridge26", "a": "Browser message: Please fill out this field.", "s": "Pass"}, {"id": "TC13", "m": "Login", "t": "Login with empty Password field", "d": "Email: donor@foodbridge.com, Password: (blank)", "a": "Browser message: Please fill out this field.", "s": "Pass"}, {"id": "TC14", "m": "Donor Dashboard", "t": "Donor can post food with valid information", "d": "Food: Beef Tehari, Type: Cooked Meal, Qty: 30, Fresh for: 6h, Location: Mohakhali DOHS", "a": "Food post added successfully! Shown in My food posts: True", "s": "Pass"}, {"id": "TC15", "m": "Donor Dashboard", "t": "Food post with empty Food name", "d": "Food: (blank), Type: Bakery, Qty: 10, Fresh for: 5h, Location: Uttara Sector 7", "a": "Browser message: Please fill out this field.", "s": "Pass"}, {"id": "TC16", "m": "Donor Dashboard", "t": "Food post with quantity 0", "d": "Food: Cup Cakes, Qty: 0", "a": "Browser message: Value must be greater than or equal to 1.", "s": "Pass"}, {"id": "TC17", "m": "Donor Dashboard", "t": "Donor can edit a food post", "d": "Edit 'Fresh Bread Loaves': Qty 15 to 25", "a": "Food post updated successfully! New quantity: 25", "s": "Pass"}, {"id": "TC18", "m": "Donor Dashboard", "t": "Donor can delete a food post", "d": "Delete 'Mixed Fruits Basket', click OK on confirm box", "a": "Food post deleted successfully! Removed from table: True", "s": "Pass"}, {"id": "TC19", "m": "Donor Dashboard", "t": "Donor can confirm pickup of claimed food", "d": "Claim: Vegetable Khichuri, 25 servings by Hope Volunteers, click Confirm pickup", "a": "Pickup confirmed! 25 servings are marked as collected. Thank you for sharing! Status: Collected. Removed from confirmation panel: True", "s": "Pass"}, {"id": "TC20", "m": "Donor Dashboard", "t": "Dashboard statistics match the food list", "d": "Compare Total posts and Pickups to confirm cards with the page", "a": "Total posts card = 5, rows in table = 5; Pickups to confirm card = 1, items in confirmation panel = 1", "s": "Pass"}, {"id": "TC21", "m": "Collector Dashboard", "t": "Collector can see available food", "d": "Open Collector Dashboard", "a": "3 food tickets shown: ['Mixed Fruits Basket', 'Fresh Bread Loaves', 'Chicken Biryani']", "s": "Pass"}, {"id": "TC22", "m": "Collector Dashboard", "t": "Search food by keyword", "d": "Search: biryani", "a": "Results: ['Chicken Biryani']", "s": "Pass"}, {"id": "TC23", "m": "Collector Dashboard", "t": "Filter food by type", "d": "Food type: Bakery", "a": "Food types shown: ['Bakery']", "s": "Pass"}, {"id": "TC24", "m": "Collector Dashboard", "t": "Collector can claim part of a food post", "d": "Food: Chicken Biryani (20 servings), Quantity: 5", "a": "You claimed 5 servings of Chicken Biryani. 15 servings are still available for others. Servings left on the ticket: 15", "s": "Pass"}, {"id": "TC25", "m": "Collector Dashboard", "t": "Claimed food appears in My claims", "d": "Claim 5 Chicken Biryani first, then check My claims (expected: Vegetable Khichuri, Chicken Biryani)", "a": "My claims table has 3 rows (Vegetable Khichuri, Chicken Biryani found: True)", "s": "Pass"}, {"id": "TC26", "m": "Collector Dashboard", "t": "Collector can release a claim before pickup", "d": "Claim 5 Chicken Biryani, then Release it and click OK on the confirm box", "a": "Food released. 5 servings are available for other collectors again. Servings left on the ticket: 20", "s": "Pass"}, {"id": "TC27", "m": "Profile and Security", "t": "User can update profile information", "d": "Name: Dhaka Food Corner Ltd, Phone: 01700000099", "a": "Profile updated successfully. After reload: Dhaka Food Corner Ltd, 01700000099", "s": "Pass"}, {"id": "TC28", "m": "Profile and Security", "t": "Change password with wrong current password", "d": "Current: wrongpass, New: newpass123, Confirm: newpass123", "a": "Current password is incorrect.", "s": "Pass"}, {"id": "TC29", "m": "Profile and Security", "t": "Logout and dashboard access after logout", "d": "Click Log out, then open donor-dashboard.html", "a": "After logout, dashboard opened: http://localhost:3000/login.html", "s": "Pass"}, {"id": "TC30", "m": "Profile and Security", "t": "A Collector cannot open the Donor dashboard", "d": "Login: collector@foodbridge.com, open donor-dashboard.html", "a": "Collector was sent to: http://localhost:3000/collector-dashboard.html", "s": "Pass"}, {"id": "TC31", "m": "Pickup Confirmation", "t": "Donor sees claimed food in the confirmation panel", "d": "Login: donor@foodbridge.com, Vegetable Khichuri claimed by Hope Volunteers", "a": "Panel count = 1; Vegetable Khichuri shown: True; Claimed by Hope Volunteers shown: True", "s": "Pass"}, {"id": "TC32", "m": "Pickup Confirmation", "t": "Collector cannot release food after donor confirmed pickup", "d": "Login: collector@foodbridge.com, Egg Fried Rice (confirmed by donor)", "a": "Egg Fried Rice: 'Confirmed by donor', Release button shown: False, Locked: True", "s": "Pass"}, {"id": "TC33", "m": "Pickup Confirmation", "t": "Full claim, confirm and lock flow", "d": "Collector claims 5 Fresh Bread Loaves, Donor confirms, Collector checks My claims", "a": "Release button before confirmation: True. Donor: Pickup confirmed! 5 servings are marked as collected. Thank you for sharing! Release button after confirmation: False, Locked: True", "s": "Pass"}, {"id": "TC34", "m": "Home Page", "t": "Home page shows only Log in and Create account buttons", "d": "Open http://localhost:3000", "a": "Buttons: ['Log in', 'Create account']. Live text: 3 donations (45 servings) waiting for a collector right now.", "s": "Pass"}, {"id": "TC35", "m": "Collector Dashboard", "t": "Remaining servings stay available for other collectors", "d": "Collector 1 claims 8 of 15 Fresh Bread Loaves, Collector 2 (smile@foodbridge.com) claims the last 7", "a": "After 8 claimed: 7 left. Second collector saw: 7 left. You claimed 7 servings of Fresh Bread Loaves. That was the last of it! Removed from list: True", "s": "Pass"}, {"id": "TC36", "m": "Collector Dashboard", "t": "Collector cannot claim more servings than are left", "d": "Food: Chicken Biryani (20 left), Quantity: 50", "a": "Browser message: Value must be less than or equal to 20. Servings left still 20: True", "s": "Pass"}, {"id": "TC37", "m": "Role Switch", "t": "Donor can switch to collector role", "d": "Login: donor@foodbridge.com, click Switch to Collector, click OK", "a": "Now on: http://localhost:3000/collector-dashboard.html. Badge: Collector. Own food hidden: True", "s": "Pass"}, {"id": "TC38", "m": "Role Switch", "t": "Collector can switch to donor role and post food", "d": "Login: collector@foodbridge.com, Switch to Donor, Food: Extra Khichuri, Qty: 10", "a": "Now on: http://localhost:3000/donor-dashboard.html. Badge: Donor. Food post added successfully!", "s": "Pass"}, {"id": "TC39", "m": "Forgot Password", "t": "User can send a password reset request to the admin", "d": "Email: collector@foodbridge.com, Mobile: 01811000002, Message: Please call after 5 pm", "a": "Your request was sent to the admin. The admin will call your mobile number and give you a 6-digit code. Status on code page: Your request is waiting for the admin. Keep your phone nearby.", "s": "Pass"}, {"id": "TC40", "m": "Forgot Password", "t": "Admin can type and save a reset code", "d": "Request from collector@foodbridge.com (01811000002), admin types Code: 482913, clicks Save code", "a": "Mobile matches: True. Code 482913 saved for collector@foodbridge.com. Tell it to the user by phone. It works for 2 hours.", "s": "Pass"}, {"id": "TC41", "m": "Forgot Password", "t": "Password reset with the admin's code from 'Already have a code?'", "d": "Admin code: 731205, user clicks 'Enter it here', Code: 000000 then 731205, New password: Fresh#Start2026", "a": "Wrong code: Wrong code. You have 4 tries left. Password reset successfully! You can log in with your new password. Login with new password: True", "s": "Pass"}, {"id": "TC42", "m": "Navigation", "t": "Back button on sign up page goes to home page", "d": "Open signup.html, click Back to Home", "a": "Back from sign up page went to: http://localhost:3000/index.html", "s": "Pass"}, {"id": "TC43", "m": "Navigation", "t": "Back button on forgot password page goes to log in page", "d": "Open forgot-password.html, click Back to Log in", "a": "Back from forgot password page went to: http://localhost:3000/login.html", "s": "Pass"}, {"id": "TC44", "m": "Contact and Location", "t": "Signup with empty Mobile number field", "d": "Mobile: (blank), other fields valid", "a": "Browser message: Please fill out this field.", "s": "Pass"}, {"id": "TC45", "m": "Contact and Location", "t": "Signup with an invalid mobile number", "d": "Mobile: 0181145129 (10 digits)", "a": "Browser message: Please match the requested format.", "s": "Pass"}, {"id": "TC46", "m": "Contact and Location", "t": "Collector can find food by area", "d": "Login: collector@foodbridge.com, Area: Gulshan, click Search", "a": "Areas shown: ['Gulshan']. Open in Maps link: True", "s": "Pass"}, {"id": "TC47", "m": "Contact and Location", "t": "Donor sees the collector's location", "d": "Login: donor@foodbridge.com, Vegetable Khichuri claimed by Hope Volunteers (Mirpur)", "a": "Collector location shown: Mirpur, Section 10, Block C, Mirpur Open in Maps", "s": "Pass"}, {"id": "TC48", "m": "Admin", "t": "Admin login opens the admin dashboard", "d": "Email: admin@foodbridge.com, Password: Admin@FoodBridge26", "a": "Opened: http://localhost:3000/admin-dashboard.html. Donors: 1, Collectors: 2", "s": "Pass"}, {"id": "TC49", "m": "Admin", "t": "Admin can block a user", "d": "Block: Smile Foundation, then log in as smile@foodbridge.com", "a": "Smile Foundation is blocked and can't log in. Login attempt: Your account is blocked. Please contact the admin.", "s": "Pass"}, {"id": "TC50", "m": "Admin", "t": "The activity log records user actions", "d": "Collector claims 5 Chicken Biryani, admin searches the log for Chicken Biryani", "a": "Newest matching log line: Nov 18, 03:33 AM Hope Volunteers Collector Claimed food 5 servings of Chicken Biryani", "s": "Pass"}, {"id": "TC51", "m": "Admin", "t": "Admin can delete a food post", "d": "Delete: Mixed Fruits Basket, click OK on confirm box", "a": "Food post \"Mixed Fruits Basket\" was deleted.", "s": "Pass"}, {"id": "TC52", "m": "Admin", "t": "A donor cannot open the admin dashboard", "d": "Login: donor@foodbridge.com, open admin-dashboard.html", "a": "Donor was sent to: http://localhost:3000/donor-dashboard.html", "s": "Pass"}, {"id": "TC53", "m": "Admin", "t": "Admin can edit a user's details", "d": "User: Smile Foundation, Mobile: 01999888777, Area: Badda, Address: Road 5, Badda", "a": "Smile Foundation was updated. Row now shows: 01999888777, Badda: True", "s": "Pass"}, {"id": "TC54", "m": "Admin", "t": "Admin can set a new password for a user", "d": "User: Hope Volunteers, New password: Admin#Gave2026, then log in", "a": "Hope Volunteers was updated. Collector logged in with the new password: True", "s": "Pass"}, {"id": "TC55", "m": "Admin", "t": "Admin can change the quantity of a food post", "d": "Food: Chicken Biryani, Total quantity: 20 to 30", "a": "Food post \"Chicken Biryani\" was updated. Servings: 30 left of 30", "s": "Pass"}, {"id": "TC56", "m": "Admin", "t": "Admin can cancel a claim", "d": "Claim: 25 servings of Vegetable Khichuri by Hope Volunteers", "a": "Claim cancelled: 25 servings of Vegetable Khichuri. Vegetable Khichuri now: 25 left of 25", "s": "Pass"}, {"id": "TC57", "m": "Admin", "t": "Admin can add a new user", "d": "Name: Kuril Food Corner, Email: kuril.food@gmail.com, Mobile: 01611223344, Area: Kuril, Role: Donor, Password: Kuril#Food2026", "a": "Kuril Food Corner was added as a donor. New user logged in: True", "s": "Pass"}, {"id": "TC58", "m": "Admin", "t": "Admin can add a food post for a donor", "d": "Donor: Dhaka Food Corner, Food: Admin Pulao, Type: Cooked Meal, Qty: 15", "a": "Food post \"Admin Pulao\" was added for Dhaka Food Corner.", "s": "Pass"}, {"id": "TC59", "m": "Admin", "t": "Admin can add a claim for a collector", "d": "Food: Fresh Bread Loaves (15 left), Collector: Hope Volunteers, Servings: 4", "a": "4 servings of Fresh Bread Loaves were claimed for Hope Volunteers. Fresh Bread Loaves now: 11 left of 15", "s": "Pass"}, {"id": "TC60", "m": "Admin", "t": "Admin can delete a user", "d": "User: Smile Foundation (smile@foodbridge.com), click Delete, click OK, then try to log in", "a": "Smile Foundation was deleted. Removed from list: True. Login attempt: Invalid email or password.", "s": "Pass"}, {"id": "TC61", "m": "Sign Up", "t": "Signup with a name made of only spaces", "d": "Name: (3 spaces), Email: spaces@gmail.com, Mobile: 01711000000, Role: Donor, Area: Banani", "a": "Name and address cannot be only spaces.", "s": "Pass"}, {"id": "TC62", "m": "Sign Up", "t": "Signup with an existing email typed in capital letters", "d": "Email: DONOR@FOODBRIDGE.COM (same as donor@foodbridge.com)", "a": "This email is already registered.", "s": "Pass"}, {"id": "TC63", "m": "Sign Up", "t": "Mobile box keeps only 11 digits when 12 are typed", "d": "Mobile typed: 017112233445 (12 digits)", "a": "Mobile box shows: 01711223344 (11 digits)", "s": "Pass"}, {"id": "TC64", "m": "Sign Up", "t": "Signup with mobile prefix 012 (not a valid operator)", "d": "Mobile: 01211223344", "a": "Browser message: Please match the requested format.", "s": "Pass"}, {"id": "TC65", "m": "Sign Up", "t": "Signup with the lowest valid mobile prefix 013", "d": "Mobile: 01311223344", "a": "Account created successfully! Please login.", "s": "Pass"}, {"id": "TC66", "m": "Sign Up", "t": "Signup with the highest valid mobile prefix 019", "d": "Mobile: 01911223355", "a": "Account created successfully! Please login.", "s": "Pass"}, {"id": "TC67", "m": "Sign Up", "t": "Letters, spaces and symbols are removed from the mobile box", "d": "Mobile typed: 01a7-11 22+33 44", "a": "Mobile box shows: 01711223344", "s": "Pass"}, {"id": "TC68", "m": "Sign Up", "t": "Signup with a password of exactly 5 characters", "d": "Password: abc12, Confirm Password: abc12", "a": "Password must be at least 6 characters long.", "s": "Pass"}, {"id": "TC69", "m": "Sign Up", "t": "Signup with a password of exactly 6 characters", "d": "Password: abc123, Confirm Password: abc123", "a": "Account created successfully! Please login.", "s": "Pass"}, {"id": "TC70", "m": "Sign Up", "t": "Signup without selecting a role", "d": "Role: (not selected), other fields valid", "a": "Browser message: Please select an item in the list.", "s": "Pass"}, {"id": "TC71", "m": "Sign Up", "t": "Signup without selecting an area", "d": "Area: (not selected), other fields valid", "a": "Browser message: Please select an item in the list.", "s": "Pass"}, {"id": "TC72", "m": "Sign Up", "t": "Signup with an empty address", "d": "Address: (empty), other fields valid", "a": "Browser message: Please fill out this field.", "s": "Pass"}, {"id": "TC73", "m": "Login", "t": "Login works with the email typed in capital letters", "d": "Email: DONOR@FOODBRIDGE.COM, Password: Donor@FoodBridge26", "a": "Opened: http://localhost:3000/donor-dashboard.html", "s": "Pass"}, {"id": "TC74", "m": "Login", "t": "The login boxes are empty and locked against autofill when the page opens", "d": "Open login.html", "a": "Boxes empty: True. Locked until clicked: True", "s": "Pass"}, {"id": "TC75", "m": "Profile and Security", "t": "A user can change the password and log in with the new one", "d": "Current: Donor@FoodBridge26, New: Better#Pass26", "a": "Password changed successfully. Login with new password: True", "s": "Pass"}, {"id": "TC76", "m": "Profile and Security", "t": "A new password of exactly 5 characters is refused", "d": "Current: Donor@FoodBridge26, New: abc12, Confirm: abc12", "a": "New password must be at least 6 characters long.", "s": "Pass"}, {"id": "TC77", "m": "Profile and Security", "t": "A new password of exactly 6 characters is accepted", "d": "Current: Donor@FoodBridge26, New: abc123, Confirm: abc123", "a": "Password changed successfully.", "s": "Pass"}, {"id": "TC78", "m": "Profile and Security", "t": "New passwords that do not match are refused", "d": "New: newpass123, Confirm: newpass999", "a": "New passwords do not match.", "s": "Pass"}, {"id": "TC79", "m": "Profile and Security", "t": "A user can change the area and address and the change is saved", "d": "Area: Gulshan, Address: Road 90, Gulshan 2", "a": "Profile updated successfully. After reload: Gulshan, Road 90, Gulshan 2", "s": "Pass"}, {"id": "TC80", "m": "Profile and Security", "t": "The profile cannot be saved with a 10 digit mobile number", "d": "Mobile: 0171122334", "a": "Browser message: Please match the requested format.", "s": "Pass"}, {"id": "TC81", "m": "Profile and Security", "t": "The profile cannot be saved with an empty name", "d": "Name: (empty)", "a": "Browser message: Please fill out this field.", "s": "Pass"}, {"id": "TC82", "m": "Donor Dashboard", "t": "Food can be posted with the lowest quantity 1", "d": "Food: Single Samosa, Quantity: 1", "a": "Food post added successfully!", "s": "Pass"}, {"id": "TC83", "m": "Donor Dashboard", "t": "Food can be posted with the highest quantity 1000", "d": "Food: Wedding Rice, Quantity: 1000", "a": "Food post added successfully!", "s": "Pass"}, {"id": "TC84", "m": "Donor Dashboard", "t": "Food cannot be posted with quantity 1001", "d": "Food: Too Much Rice, Quantity: 1001", "a": "Browser message: Value must be less than or equal to 1000.", "s": "Pass"}, {"id": "TC85", "m": "Donor Dashboard", "t": "Food can be posted with the shortest fresh time of 1 hour", "d": "Food: Hot Tea, Fresh for: 1 hour", "a": "Food post added successfully!", "s": "Pass"}, {"id": "TC86", "m": "Donor Dashboard", "t": "Food can be posted with the longest fresh time of 48 hours", "d": "Food: Dry Biscuits, Fresh for: 48 hours", "a": "Food post added successfully!", "s": "Pass"}, {"id": "TC87", "m": "Donor Dashboard", "t": "Food cannot be posted with a fresh time of 0 hours", "d": "Food: Old Curry, Fresh for: 0", "a": "Browser message: Value must be greater than or equal to 1.", "s": "Pass"}, {"id": "TC88", "m": "Donor Dashboard", "t": "Food cannot be posted with a fresh time of 49 hours", "d": "Food: Long Rice, Fresh for: 49", "a": "Browser message: Value must be less than or equal to 48.", "s": "Pass"}, {"id": "TC89", "m": "Donor Dashboard", "t": "Food cannot be posted without a food type", "d": "Food: Mystery Box, Type: (not selected)", "a": "Browser message: Please select an item in the list.", "s": "Pass"}, {"id": "TC90", "m": "Donor Dashboard", "t": "Food cannot be posted without a pickup address", "d": "Food: Plain Rice, Pickup address: (empty)", "a": "Browser message: Please fill out this field.", "s": "Pass"}, {"id": "TC91", "m": "Donor Dashboard", "t": "A donor cannot edit food that a collector already claimed", "d": "Food: Vegetable Khichuri (claimed by Hope Volunteers)", "a": "Edit button shown: False. Row says: Confirm pickups above", "s": "Pass"}, {"id": "TC92", "m": "Donor Dashboard", "t": "A donor cannot delete food while a pickup is waiting", "d": "Food: Vegetable Khichuri (pickup waiting)", "a": "Delete button shown: False", "s": "Pass"}, {"id": "TC93", "m": "Donor Dashboard", "t": "A donor can delete food after every pickup is confirmed", "d": "Food: Egg Fried Rice (collected)", "a": "Food post deleted successfully! Removed: True", "s": "Pass"}, {"id": "TC94", "m": "Donor Dashboard", "t": "Cancel edit puts the form back to posting new food", "d": "Click Edit on Fresh Bread Loaves, then Cancel edit", "a": "While editing: Edit food post. After cancel: Post surplus food", "s": "Pass"}, {"id": "TC95", "m": "Collector Dashboard", "t": "A collector can claim the lowest amount of 1 serving", "d": "Food: Chicken Biryani (20 left), Quantity: 1", "a": "You claimed 1 servings of Chicken Biryani. 19 servings are still available for others. Left: 19", "s": "Pass"}, {"id": "TC96", "m": "Collector Dashboard", "t": "A collector can claim every serving that is left", "d": "Food: Chicken Biryani (20 left), Quantity: 20", "a": "You claimed 20 servings of Chicken Biryani. That was the last of it! Removed from list: True", "s": "Pass"}, {"id": "TC97", "m": "Collector Dashboard", "t": "A collector cannot claim one more than what is left", "d": "Food: Chicken Biryani (20 left), Quantity: 21", "a": "Browser message: Value must be less than or equal to 20. Left: 20", "s": "Pass"}, {"id": "TC98", "m": "Collector Dashboard", "t": "A collector cannot claim 0 servings", "d": "Food: Chicken Biryani, Quantity: 0", "a": "Browser message: Value must be greater than or equal to 1.", "s": "Pass"}, {"id": "TC99", "m": "Collector Dashboard", "t": "Claiming the same food twice adds to one claim", "d": "Food: Chicken Biryani, Claim 3, then claim 2", "a": "Chicken Biryani rows in My claims: 1. Servings: 5", "s": "Pass"}, {"id": "TC100", "m": "Collector Dashboard", "t": "The search box also finds food by area name", "d": "Search: gulshan", "a": "Results: ['Fresh Bread Loaves']", "s": "Pass"}, {"id": "TC101", "m": "Collector Dashboard", "t": "The Clear button removes the search and shows all food again", "d": "Search: biryani, then click Clear", "a": "Food shown after Clear: 3", "s": "Pass"}, {"id": "TC102", "m": "Collector Dashboard", "t": "Food in the collector's own area shows a Near you badge", "d": "Donor posts Mirpur Pitha in Mirpur, collector Hope Volunteers lives in Mirpur", "a": "Mirpur Pitha has Near you: True. Chicken Biryani (Banani) has it: False", "s": "Pass"}, {"id": "TC103", "m": "Collector Dashboard", "t": "A search with no match shows the empty message", "d": "Search: pizza", "a": "No food matches right now. Clear the search or check again in a little while.", "s": "Pass"}, {"id": "TC104", "m": "Pickup Confirmation", "t": "Claims from two collectors on one post are confirmed separately", "d": "Hope Volunteers claims 5 and Smile Foundation claims 3 of Fresh Bread Loaves, donor confirms only Hope", "a": "Both claims shown: True. After confirming Hope, Smile still waiting: True", "s": "Pass"}, {"id": "TC105", "m": "Role Switch", "t": "The admin dashboard has no role switch button", "d": "Login: admin@foodbridge.com", "a": "Switch role button on admin page: False", "s": "Pass"}, {"id": "TC106", "m": "Role Switch", "t": "A switched role is kept after logging out and in again", "d": "Donor switches to Collector, logs out, logs in again", "a": "After logging in again: http://localhost:3000/collector-dashboard.html", "s": "Pass"}, {"id": "TC107", "m": "Forgot Password", "t": "A reset request cannot be sent with a 10 digit mobile number", "d": "Email: collector@foodbridge.com, Mobile: 0181100000", "a": "Browser message: Please match the requested format.", "s": "Pass"}, {"id": "TC108", "m": "Forgot Password", "t": "A request for an unknown email looks normal but the admin cannot give a code", "d": "Email: nobody@gmail.com, Mobile: 01711999888", "a": "User saw: Your request was sent to the admin. The admin will call your mobile number and give you a 6-digit code. Admin sees: No account uses this email, code box shown: False", "s": "Pass"}, {"id": "TC109", "m": "Forgot Password", "t": "The code page tells the user when the admin has given a code", "d": "Request for collector@foodbridge.com, admin saves code 482913", "a": "Status: The admin has given you a code. Enter it below.", "s": "Pass"}, {"id": "TC110", "m": "Forgot Password", "t": "The user cannot enter a code of only 5 digits", "d": "Code: 12345", "a": "Browser message: Please match the requested format.", "s": "Pass"}, {"id": "TC111", "m": "Forgot Password", "t": "The admin cannot save a code of only 5 digits", "d": "Request for collector@foodbridge.com, admin types Code: 12345", "a": "Please type exactly 6 digits for the code.", "s": "Pass"}, {"id": "TC112", "m": "Forgot Password", "t": "4 wrong codes leave exactly 1 try", "d": "Admin code: 482913, user types 000001 to 000004", "a": "After 4 wrong codes: Wrong code. You have 1 tries left.", "s": "Pass"}, {"id": "TC113", "m": "Forgot Password", "t": "After 5 wrong codes even the right code is refused", "d": "Admin code: 482913, user types 5 wrong codes, then 482913", "a": "Right code after 5 wrong ones: Too many wrong codes. Please send a new request.", "s": "Pass"}, {"id": "TC114", "m": "Forgot Password", "t": "A user is told when the admin rejected the request", "d": "Request for collector@foodbridge.com, admin clicks Reject, user enters 482913", "a": "The admin rejected this request. Please send a new request.", "s": "Pass"}, {"id": "TC115", "m": "Forgot Password", "t": "A new request makes the old code stop working", "d": "Request 1 gets code 482913, user sends request 2, then tries 482913", "a": "Old code after a new request: The admin has not given you a code yet. Please wait for their call.", "s": "Pass"}, {"id": "TC116", "m": "Forgot Password", "t": "The new password after reset must have at least 6 characters", "d": "Admin code: 482913, New password: abc12", "a": "New password must be at least 6 characters long.", "s": "Pass"}, {"id": "TC117", "m": "Forgot Password", "t": "The two new passwords after reset must match", "d": "Admin code: 482913, New: Fresh#Start2026, Confirm: Fresh#Start2027", "a": "Passwords do not match.", "s": "Pass"}, {"id": "TC118", "m": "Forgot Password", "t": "A reset code cannot be used a second time", "d": "Admin code: 482913, reset the password, then try 482913 again", "a": "Same code again: This request is closed. Please send a new request.", "s": "Pass"}, {"id": "TC119", "m": "Admin", "t": "Admin can unblock a user and they can log in again", "d": "User: Smile Foundation, click Block, then Unblock", "a": "Smile Foundation is unblocked. Smile Foundation logged in: True", "s": "Pass"}, {"id": "TC120", "m": "Admin", "t": "Admin can change a user's role from Edit user", "d": "User: Smile Foundation, Role: Collector changed to Donor", "a": "Smile Foundation was updated. Smile Foundation now opens: http://localhost:3000/donor-dashboard.html", "s": "Pass"}, {"id": "TC121", "m": "Admin", "t": "Admin cannot add a user with an email that is already used", "d": "Email: collector@foodbridge.com", "a": "This email is already registered.", "s": "Pass"}, {"id": "TC122", "m": "Admin", "t": "Admin cannot add a user with a 5 character password", "d": "Name: Short Pass, Password: abc12", "a": "Password must be at least 6 characters long.", "s": "Pass"}, {"id": "TC123", "m": "Admin", "t": "Admin cannot add a user with a 10 digit mobile number", "d": "Mobile: 0161122338", "a": "Browser message: Please match the requested format.", "s": "Pass"}, {"id": "TC124", "m": "Admin", "t": "Admin cannot set a quantity below what collectors already took", "d": "Food: Vegetable Khichuri (25 claimed), Total quantity: 24", "a": "Browser message: Value must be greater than or equal to 25.", "s": "Pass"}, {"id": "TC125", "m": "Admin", "t": "Admin can set the quantity equal to what collectors already took", "d": "Food: Vegetable Khichuri (25 claimed), Total quantity: 25", "a": "Food post \"Vegetable Khichuri\" was updated. Servings: 0 left of 25", "s": "Pass"}, {"id": "TC126", "m": "Admin", "t": "Admin cannot add a claim larger than what is left", "d": "Food: Fresh Bread Loaves (15 left), Collector: Hope Volunteers, Servings: 16", "a": "Browser message: Value must be less than or equal to 15.", "s": "Pass"}, {"id": "TC127", "m": "Admin", "t": "Admin can add a claim for exactly what is left", "d": "Food: Fresh Bread Loaves (15 left), Collector: Hope Volunteers, Servings: 15", "a": "15 servings of Fresh Bread Loaves were claimed for Hope Volunteers. Servings: 0 left of 15", "s": "Pass"}, {"id": "TC128", "m": "Admin", "t": "Admin can confirm a pickup from the Claims tab", "d": "Claim: 25 servings of Vegetable Khichuri by Hope Volunteers", "a": "Pickup confirmed: 25 servings of Vegetable Khichuri. Status: Collected", "s": "Pass"}, {"id": "TC129", "m": "Admin", "t": "Deleting a food post also removes its waiting claims", "d": "Food: Vegetable Khichuri (waiting claim of 25), click Delete, click OK", "a": "Food post \"Vegetable Khichuri\" was deleted. Waiting claim removed: True", "s": "Pass"}, {"id": "TC130", "m": "Admin", "t": "Admin can search the user list", "d": "Search: smile", "a": "Rows shown: 1", "s": "Pass"}, {"id": "TC131", "m": "Admin", "t": "Admin can show only collectors in the user list", "d": "Role filter: Collectors", "a": "Rows shown: 2. All collectors: True", "s": "Pass"}, {"id": "TC132", "m": "Admin", "t": "Admin can see the activity of one user only", "d": "Activity log, User: Hope Volunteers", "a": "Rows shown: 1, all by Hope Volunteers", "s": "Pass"}, {"id": "TC133", "m": "Admin", "t": "Admin can reject a password reset request", "d": "Request for collector@foodbridge.com, click Reject, click OK", "a": "Request rejected. Status: Rejected", "s": "Pass"}, {"id": "TC134", "m": "Admin", "t": "A changed code replaces the first code", "d": "Admin saves 111111, then changes it to 222222, user tries both", "a": "First code: Wrong code. You have 4 tries left. Second code accepted: True", "s": "Pass"}, {"id": "TC135", "m": "Admin", "t": "A collector cannot open the admin dashboard", "d": "Login: collector@foodbridge.com, open admin-dashboard.html", "a": "Collector was sent to: http://localhost:3000/collector-dashboard.html", "s": "Pass"}, {"id": "TC136", "m": "Home Page", "t": "The home page buttons change when the user is logged in", "d": "Login: donor@foodbridge.com, open index.html", "a": "Buttons: ['Log out', 'Go to dashboard']", "s": "Pass"}, {"id": "TC137", "m": "Home Page", "t": "The home page shows the newest food post", "d": "Donor posts Mango Juice, then open the home page", "a": "Home page ticket shows: Mango Juice", "s": "Pass"}, {"id": "TC138", "m": "Navigation", "t": "The Back button on the login page goes to the home page", "d": "Open login.html, click Back to Home", "a": "Went to: http://localhost:3000/index.html", "s": "Pass"}, {"id": "TC139", "m": "Navigation", "t": "The Back button on the code page goes to the forgot password page", "d": "Open reset-password.html, click Back to Forgot password", "a": "Went to: http://localhost:3000/forgot-password.html", "s": "Pass"}, {"id": "TC140", "m": "Navigation", "t": "The Dashboard link on the profile page opens the user's own dashboard", "d": "Login: donor@foodbridge.com, open Profile, click Dashboard", "a": "Went to: http://localhost:3000/donor-dashboard.html", "s": "Pass"}];
+
+const ORDER = ["Sign Up", "Login", "Profile and Security", "Donor Dashboard", "Collector Dashboard", "Pickup Confirmation",
+  "Role Switch", "Forgot Password", "Contact and Location", "Admin", "Home Page", "Navigation"];
+
+const RULES = [
+  ["Food quantity: 1 to 1000", ["0"], ["1", "1000"], ["1001"], "TC16, TC82, TC83, TC84"],
+  ["Fresh time: 1 to 48 hours", ["0"], ["1", "48"], ["49"], "TC85, TC86, TC87, TC88"],
+  ["Password at sign up: at least 6", ["3", "5"], ["6"], [], "TC06, TC68, TC69"],
+  ["New password: at least 6", ["5"], ["6"], [], "TC76, TC77, TC116, TC122"],
+  ["Mobile: exactly 11 digits", ["10"], ["11"], ["12 (cannot be typed)"], "TC45, TC63, TC80, TC107, TC123"],
+  ["Mobile prefix: 013 to 019", ["012"], ["013", "019"], [], "TC64, TC65, TC66"],
+  ["Claim: 1 to servings left (20)", ["0"], ["1", "20"], ["21", "50"], "TC36, TC95, TC96, TC97, TC98"],
+  ["Admin quantity: not below claimed (25)", ["24"], ["25"], [], "TC124, TC125"],
+  ["Admin claim: not above servings left (15)", [], ["15"], ["16"], "TC126, TC127"],
+  ["Reset code: exactly 6 digits", ["5 digits"], ["6 digits"], [], "TC110, TC111"],
+  ["Wrong code tries: 5 at most", [], ["4 wrong, 1 try left"], ["5 wrong, locked"], "TC112, TC113"],
+  ["Reset code: used once", [], ["first use"], ["second use"], "TC118"]
+];
+
+function esc(text) {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function drawSummary() {
+  const max = Math.max(...ORDER.map((m) => TESTS.filter((t) => t.m === m).length));
+  let html = "";
+  for (const m of ORDER) {
+    const list = TESTS.filter((t) => t.m === m);
+    const passed = list.filter((t) => t.s === "Pass").length;
+    html += "<tr><td>" + esc(m) + "</td>" +
+      '<td class="mod-cell"><div style="display:flex;align-items:center;gap:10px"><div class="mod-bar" style="width:' +
+      Math.round((list.length / max) * 100) + '%"></div><span>' + list.length + "</span></div></td>" +
+      '<td class="num-cell">' + passed + '</td><td class="num-cell">' + (list.length - passed) + "</td>" +
+      '<td class="num-cell">' + Math.round((passed / list.length) * 100) + "%</td></tr>";
+  }
+  const passedAll = TESTS.filter((t) => t.s === "Pass").length;
+  html += '<tr class="total"><td>Total</td><td>' + TESTS.length + '</td><td class="num-cell">' + passedAll +
+    '</td><td class="num-cell">' + (TESTS.length - passedAll) + '</td><td class="num-cell">' +
+    Math.round((passedAll / TESTS.length) * 100) + "%</td></tr>";
+  document.getElementById("summaryBody").innerHTML = html;
+}
+
+function drawRules() {
+  let html = "";
+  for (const [name, low, ok, high, tcs] of RULES) {
+    const chips = (arr, cls) => arr.map((v) => '<span class="chip ' + cls + '">' + esc(v) + "</span>").join("");
+    html += '<div class="rule"><div class="name">' + esc(name) + '</div><div class="line">' +
+      chips(low, "no") + (low.length ? '<span class="range"></span>' : "") + chips(ok, "ok") +
+      (high.length ? '<span class="range"></span>' : "") + chips(high, "no") +
+      '</div><div class="tcs">' + esc(tcs) + "</div></div>";
+  }
+  document.getElementById("ruleList").innerHTML = html;
+}
+
+let activeModule = "All";
+
+function drawFilters() {
+  const names = ["All"].concat(ORDER);
+  document.getElementById("filters").innerHTML = names.map((n) => {
+    const n2 = n === "All" ? TESTS.length : TESTS.filter((t) => t.m === n).length;
+    return '<button type="button" data-m="' + esc(n) + '" class="' + (n === activeModule ? "on" : "") + '">' +
+      esc(n) + " (" + n2 + ")</button>";
+  }).join("");
+  document.querySelectorAll("#filters button").forEach((b) => {
+    b.addEventListener("click", () => {
+      activeModule = b.dataset.m;
+      drawFilters();
+      drawResults();
+    });
+  });
+}
+
+function drawResults() {
+  const q = document.getElementById("search").value.trim().toLowerCase();
+  const list = TESTS.filter((t) =>
+    (activeModule === "All" || t.m === activeModule) &&
+    (!q || (t.id + " " + t.t + " " + t.d + " " + t.a + " " + t.m).toLowerCase().includes(q)));
+
+  document.getElementById("count").textContent = "Showing " + list.length + " of " + TESTS.length + " test cases";
+  const body = document.getElementById("resultsBody");
+  if (list.length === 0) {
+    body.innerHTML = '<tr><td colspan="5" class="empty">No test case matches this search.</td></tr>';
+    return;
+  }
+  body.innerHTML = list.map((t) =>
+    "<tr><td>" + esc(t.id) + "</td><td>" + esc(t.t) + '<span class="modtag">' + esc(t.m) + "</span></td>" +
+    '<td class="data">' + esc(t.d) + '</td><td class="actual">' + esc(t.a) + "</td>" +
+    '<td><span class="pass">' + esc(t.s) + "</span></td></tr>").join("");
+}
+
+document.getElementById("search").addEventListener("input", drawResults);
+
+drawSummary();
+drawRules();
+drawFilters();
+drawResults();
+</script>
+</body>
+</html>
